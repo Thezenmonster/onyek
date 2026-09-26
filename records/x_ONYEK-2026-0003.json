@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.9.1",
+  "id": "x_ONYEK-2026-0003",
+  "modified": "2026-09-26T07:39:17Z",
+  "published": "2026-09-26T07:39:17Z",
+  "summary": "Command injection through incoming message text in macOS desktop notifications",
+  "details": "slashvibe-mcp is a Model Context Protocol server for the /vibe messaging service. On macOS it shows desktop notifications for incoming direct messages, mentions, other users' presence notes and posts. It builds an AppleScript command containing the message text and runs it with ``exec(`osascript -e '${script}'`)``, which goes through a shell. The text is placed inside a single-quoted shell argument and only double quotes are escaped.\n\nA single quote in the text ends the shell quoting, so the remainder of the text is interpreted by the shell and can run commands with the user's privileges. The text is written by other users of the service, so another user can trigger this on the recipient's Mac simply by sending a message or setting a presence note. No language model needs to be involved.\n\nVersion 0.5.7 runs osascript through `execFile` with an argument array, so no shell interprets the text.\n\nThe affected range was established by testing every published release from 0.2.0, the first, to 0.6.x, and spot-checking later releases. 0.5.6 is the last affected release. macOS only.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "slashvibe-mcp",
+        "purl": "pkg:npm/slashvibe-mcp"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0.2.0"
+            },
+            {
+              "fixed": "0.5.7"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "type": "PACKAGE",
+      "url": "https://www.npmjs.com/package/slashvibe-mcp"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/VibeCodingInc/vibe-mcp"
+    }
+  ],
+  "credits": [
+    {
+      "name": "Michael K Onyekwere",
+      "type": "ANALYST"
+    },
+    {
+      "name": "AgentScore",
+      "type": "TOOL"
+    }
+  ],
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-78"
+    ]
+  }
+}

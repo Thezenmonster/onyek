@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.9.1",
+  "id": "x_ONYEK-2026-0002",
+  "modified": "2026-09-26T07:39:17Z",
+  "published": "2026-09-26T07:39:17Z",
+  "summary": "Command injection through file paths passed to ffprobe and ffmpeg on macOS and Linux",
+  "details": "@golproductions/envie is a Model Context Protocol server for rendering and inspecting video. Its envie_see tool passes a model-supplied video path into shell commands built with `execSync`, with the path interpolated inside double quotes. Double quotes do not prevent command substitution in a POSIX shell, so a path containing `$(...)` or backticks is executed.\n\nThe path must refer to an existing file. The envie_render tool accepts a model-supplied output path that is checked only for its file extension, so a file whose name contains a command substitution can be created with one tool and then passed to envie_see, which executes it. A caller who can influence the tool arguments, for example through prompt injection in content the model reads, can therefore run arbitrary commands. The Windows shell treats quoting differently and was not assessed.\n\nVersion 0.8.6 invokes ffprobe and ffmpeg through `spawnSync` with argument arrays, so no shell interprets the path.\n\nThe affected range was established by testing every published release. The shell calls first appear in 0.8.0, earlier releases pass no values to a shell at all, and 0.8.5 is the last affected release.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@golproductions/envie",
+        "purl": "pkg:npm/%40golproductions/envie"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0.8.0"
+            },
+            {
+              "fixed": "0.8.6"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "type": "PACKAGE",
+      "url": "https://www.npmjs.com/package/@golproductions/envie"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/golproductions/envie"
+    }
+  ],
+  "credits": [
+    {
+      "name": "Michael K Onyekwere",
+      "type": "ANALYST"
+    },
+    {
+      "name": "AgentScore",
+      "type": "TOOL"
+    }
+  ],
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-78"
+    ]
+  }
+}
