@@ -1,7 +1,7 @@
 {
   "schema_version": "1.9.1",
   "id": "x_ONYEK-2026-0002",
-  "modified": "2026-09-26T07:39:17Z",
+  "modified": "2026-09-27T16:27:28Z",
   "published": "2026-09-26T07:39:17Z",
   "summary": "Command injection through file paths passed to ffprobe and ffmpeg on macOS and Linux",
   "details": "@golproductions/envie is a Model Context Protocol server for rendering and inspecting video. Its envie_see tool passes a model-supplied video path into shell commands built with `execSync`, with the path interpolated inside double quotes. Double quotes do not prevent command substitution in a POSIX shell, so a path containing `$(...)` or backticks is executed.\n\nThe path must refer to an existing file. The envie_render tool accepts a model-supplied output path that is checked only for its file extension, so a file whose name contains a command substitution can be created with one tool and then passed to envie_see, which executes it. A caller who can influence the tool arguments, for example through prompt injection in content the model reads, can therefore run arbitrary commands. The Windows shell treats quoting differently and was not assessed.\n\nVersion 0.8.6 invokes ffprobe and ffmpeg through `spawnSync` with argument arrays, so no shell interprets the path.\n\nThe affected range was established by testing every published release. The shell calls first appear in 0.8.0, earlier releases pass no values to a shell at all, and 0.8.5 is the last affected release.",
@@ -50,6 +50,10 @@
   "database_specific": {
     "cwe_ids": [
       "CWE-78"
-    ]
+    ],
+    "owasp_mcp_top10": [
+      "MCP05:2025"
+    ],
+    "deployer_note": "The attack uses two of the server's tools in sequence. One tool (envie_render) can create a file whose name carries a command, and another (envie_see) runs that command when it inspects the file. Approving tools one at a time does not catch this, as each looks unremarkable on its own. When assessing a server, look at what its tools can do together as well as separately, and upgrade to 0.8.6 or later."
   }
 }

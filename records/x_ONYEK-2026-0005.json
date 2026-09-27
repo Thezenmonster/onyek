@@ -1,7 +1,7 @@
 {
   "schema_version": "1.9.1",
   "id": "x_ONYEK-2026-0005",
-  "modified": "2026-09-27T08:53:05Z",
+  "modified": "2026-09-27T16:27:28Z",
   "published": "2026-09-27T08:53:05Z",
   "summary": "Command injection through the audit tool's page URL and report path on macOS and Linux",
   "details": "chromex-mcp is a Model Context Protocol server that drives a Chrome browser. Its chromex_audit tool ran a Lighthouse audit by building a shell command string that contained the audited page's own URL (interpolated through JSON.stringify) and the tool's reportPath argument (interpolated without quoting), and executing it with execSync (plugins/chromex/skills/chromex/scripts/lib/commands/audit.mjs). JSON.stringify does not escape the dollar sign or backticks, which a POSIX shell still expands inside double quotes.\n\nTwo values reached the shell. The reportPath tool argument is supplied by the model, and a model argument can be steered by prompt injection in content the model reads. The page URL is the audited page's own location, so a hostile web page could place a command substitution in its own URL and have it run when an agent audited that page. The audit tool was also marked read-only, so a client that auto-approves read-only tools would run it without prompting. macOS and Linux.\n\nVersion 1.8.1 removed the shell string and invoked the process through an argument array. Version 1.8.2 completed the remediation by running the Lighthouse CLI directly through Node with an isolated argument array, so neither the URL nor the report path passes through a shell, and it re-marked the audit tool as not read-only. The maintainer verified the report and shipped the fix.\n\nThe affected range was established by testing published releases. The Lighthouse audit and the vulnerable call first appear in 1.4.0, and 1.8.0 is the last affected release.",
@@ -54,6 +54,10 @@
   "database_specific": {
     "cwe_ids": [
       "CWE-78"
-    ]
+    ],
+    "owasp_mcp_top10": [
+      "MCP05:2025"
+    ],
+    "deployer_note": "The audit tool was marked read-only, and a client that auto-approves read-only tools would have run it without asking. That label is an unverified hint set by the tool's own author. The audited page's URL also reached the shell, so a hostile web page could trigger the flaw simply by being audited, with no need to steer the model. Treat read-only labels as the author's claim rather than a guarantee, and upgrade to 1.8.2 or later."
   }
 }

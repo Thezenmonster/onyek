@@ -20,6 +20,15 @@ The review is AI-assisted with human accountability; it is not claimed to be han
 
 Each file under `records/` is a single advisory in [OSV schema](https://ossf.github.io/osv-schema/) format, validated against the published JSON Schema. Records currently carry the `x_ONYEK` experimental prefix; the `x_` is dropped once the `ONYEK` prefix is allocated by osv.dev.
 
+## Notes for deployers
+
+Each record also carries two fields under `database_specific`, written for the teams that decide which agent tools to install:
+
+- `owasp_mcp_top10`: the [OWASP MCP Top 10](https://owasp.org/www-project-mcp-top-10/) category the record is evidence for.
+- `deployer_note`: what the flaw means for a team running the tool, and what would have limited it.
+
+[DEPLOYER-NOTES.md](DEPLOYER-NOTES.md) collects the notes in one place.
+
 ## Credit and licence
 
 Records credit Michael K Onyekwere as the analyst. Reuse: CC-BY-4.0 (proposed), so the data can propagate through downstream tooling while the source is attributed.
