@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.9.1",
+  "id": "x_ONYEK-2026-0004",
+  "modified": "2026-10-01T05:51:03Z",
+  "published": "2026-10-01T05:51:00Z",
+  "aliases": [
+    "GHSA-rxh9-32xw-qcfg"
+  ],
+  "summary": "Command injection through session transcript text on the claude-cli backend",
+  "details": "@gamaze/hicortex is a Model Context Protocol memory server. On its claude-cli backend it shells out to the Claude CLI to distil saved AI session transcripts. It built the command as a shell string with a transcript-derived prompt interpolated through JSON.stringify inside double quotes (dist/llm.js). JSON.stringify escapes double quotes and backslashes but not the dollar sign or backticks, and a POSIX shell still performs command substitution on those inside double quotes, so text in a transcript could run as a shell command with the user's privileges.\n\nThe transcript is ordinary user and assistant message text. Because assistants routinely write inline code in backticks, the flaw could execute commands during the scheduled distillation with no attacker involved. An attacker who could steer the model into writing a command-substitution expression into the conversation, for example through content the agent reads, could also reach it. The claude-cli backend is the setup's recommended default when no local model is present. macOS and Linux.\n\nVersion 0.23.1 invokes the CLI with execFileSync and an argument array, with no shell, and passes the prompt on the child process's standard input, so transcript text is never interpreted by a shell.\n\nThe affected range was established by testing published releases. The claude-cli backend and the vulnerable call first appear in 0.3.10; 0.3.9 and earlier do not shell out on this path. 0.23.0 is the last affected release and 0.23.1 is the fix. The maintainer verified the report and shipped the fix.",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@gamaze/hicortex",
+        "purl": "pkg:npm/%40gamaze/hicortex"
+      },
+      "ranges": [
+        {
+          "type": "SEMVER",
+          "events": [
+            {
+              "introduced": "0.3.10"
+            },
+            {
+              "fixed": "0.23.1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "type": "PACKAGE",
+      "url": "https://www.npmjs.com/package/@gamaze/hicortex"
+    },
+    {
+      "type": "ADVISORY",
+      "url": "https://github.com/gamaze-labs/hicortex/security/advisories/GHSA-rxh9-32xw-qcfg"
+    },
+    {
+      "type": "FIX",
+      "url": "https://github.com/gamaze-labs/hicortex/commit/20020e8"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/gamaze-labs/hicortex"
+    }
+  ],
+  "credits": [
+    {
+      "name": "Michael K Onyekwere",
+      "type": "ANALYST"
+    },
+    {
+      "name": "AgentScore",
+      "type": "TOOL"
+    }
+  ],
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-78"
+    ],
+    "owasp_mcp_top10": [
+      "MCP05:2025"
+    ],
+    "deployer_note": "The vulnerable code runs in a scheduled background job that distils saved transcripts, so it works outside any tool call and no approval prompt appears. Assistants routinely write code in backticks, which meant it could run commands with no attacker involved. When assessing an agent tool, check what it does in the background as well as what its tools do when called. Upgrade to 0.23.1 or later."
+  }
+}

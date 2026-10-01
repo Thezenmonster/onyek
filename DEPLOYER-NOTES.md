@@ -20,6 +20,12 @@ Command injection through incoming message text in macOS desktop notifications. 
 
 This flaw never passes through the agent. The text comes from other users of the messaging service, so anyone on it could run commands on a recipient's Mac by sending a message or setting a presence note, and no agent permission setting would have stopped it. A server that receives content from other people should be reviewed like any other software exposed to the internet before it goes on a machine with sensitive access. Upgrade to 0.5.7 or later.
 
+## x_ONYEK-2026-0004: @gamaze/hicortex
+
+Command injection through session transcript text on the claude-cli backend. Introduced in 0.3.10, fixed in 0.23.1. OWASP MCP Top 10: MCP05:2025.
+
+The vulnerable code runs in a scheduled background job that distils saved transcripts, so it works outside any tool call and no approval prompt appears. Assistants routinely write code in backticks, which meant it could run commands with no attacker involved. When assessing an agent tool, check what it does in the background as well as what its tools do when called. Upgrade to 0.23.1 or later.
+
 ## x_ONYEK-2026-0005: chromex-mcp
 
 Command injection through the audit tool's page URL and report path on macOS and Linux. Introduced in 1.4.0, fixed in 1.8.2. OWASP MCP Top 10: MCP05:2025.
