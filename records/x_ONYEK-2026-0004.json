@@ -1,7 +1,7 @@
 {
   "schema_version": "1.9.1",
   "id": "x_ONYEK-2026-0004",
-  "modified": "2026-10-01T05:51:03Z",
+  "modified": "2026-10-02T09:43:28Z",
   "published": "2026-10-01T05:51:00Z",
   "aliases": [
     "GHSA-rxh9-32xw-qcfg"
@@ -28,6 +28,12 @@
           ]
         }
       ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
     }
   ],
   "references": [
