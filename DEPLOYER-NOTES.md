@@ -18,7 +18,7 @@ The attack uses two of the server's tools in sequence. One tool (envie_render) c
 
 Command injection through incoming message text in macOS desktop notifications. Introduced in 0.2.0, fixed in 0.5.7. OWASP MCP Top 10: MCP05:2025.
 
-This flaw never passes through the agent. The text comes from other users of the messaging service, so anyone on it could run commands on a recipient's Mac by sending a message or setting a presence note, and no agent permission setting would have stopped it. A server that receives content from other people should be reviewed like any other software exposed to the internet before it goes on a machine with sensitive access. Upgrade to 0.5.7 or later.
+This flaw does not pass through the agent at all, because the message text comes from other users of the service rather than from a tool call, so anyone on the service could run commands on a recipient's Mac by sending a message or setting a presence note, and no agent permission setting would have stopped it. A server that processes content from other people should be reviewed like any other internet-facing software before it is installed on a machine with access to sensitive data. Upgrade to 0.5.7 or later.
 
 ## x_ONYEK-2026-0004: @gamaze/hicortex
 
@@ -30,4 +30,4 @@ The vulnerable code runs in a scheduled background job that distils saved transc
 
 Command injection through the audit tool's page URL and report path on macOS and Linux. Introduced in 1.4.0, fixed in 1.8.2. OWASP MCP Top 10: MCP05:2025.
 
-The audit tool was marked read-only, and a client that auto-approves read-only tools would have run it without asking. That label is an unverified hint set by the tool's own author. The audited page's URL also reached the shell, so a hostile web page could trigger the flaw simply by being audited, with no need to steer the model. Treat read-only labels as the author's claim rather than a guarantee, and upgrade to 1.8.2 or later.
+The audit tool was marked read-only, which meant a client that auto-approves read-only tools would run it without asking, although that label is only an unverified hint set by the tool's own author rather than anything the client checks. Because the audited page's own URL also reached the shell, a hostile web page could trigger the flaw simply by being audited, with no need to steer the model. Treat a read-only label as the author's claim rather than a guarantee, and upgrade to 1.8.2 or later.
